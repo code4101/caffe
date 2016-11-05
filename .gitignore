@@ -42,7 +42,7 @@
 .settings
 
 # QtCreator files
-*.user
+# *.user
 
 # PyCharm files
 .idea
@@ -96,9 +96,11 @@ CURRENT
 MANIFEST-*
 
 #Visual Studio files
-*.user
+#*.user
 *.suo
 *.sdf
 *.opensdf
 *.pdb
-*.props
+#*.props
+
+*.db
