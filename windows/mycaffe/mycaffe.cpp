@@ -252,7 +252,10 @@ CCaffeCfr::~CCaffeCfr() {
 	if (p_classifier) delete p_classifier;
 }
 
-string CCaffeCfr::cfr(cv::Mat img) const {
+string CCaffeCfr::cfr(CvMat _img) const {
+	cv::Mat img((&_img));
+	std::cout << img.data << " a\n";
+
 	Classifier &classifier = *p_classifier;
 	std::vector<Prediction> predictions = classifier.Classify(img, 1);
 

@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <string>
-#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 using std::string;
 
 class CCaffeCfr {
@@ -12,5 +12,5 @@ public: //构造函数
 	_declspec(dllexport) ~CCaffeCfr();
 
 public: //分类函数
-	_declspec(dllexport) string cfr(cv::Mat img) const;
+	_declspec(dllexport) string cfr(CvMat _img) const;
 };
