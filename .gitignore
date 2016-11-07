@@ -104,3 +104,4 @@ MANIFEST-*
 #*.props
 
 *.db
+*.opendb
