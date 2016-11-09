@@ -22,3 +22,4 @@ if exist "%OUTPUT_DIR%\%newDllName%" (
     echo FixGFlagsNaming.cmd : mklink /H "%OUTPUT_DIR%\%newDllName%" "%OUTPUT_DIR%\%originalDllName%"
     mklink /H "%OUTPUT_DIR%\%newDllName%" "%OUTPUT_DIR%\%originalDllName%"
 )
+
