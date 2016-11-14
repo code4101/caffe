@@ -18,9 +18,9 @@ using std::string;
 /* Pair (label, confidence) representing a prediction. */
 typedef std::pair<string, float> Prediction;
 
-class Classifier::impl {
+class Classifier {
 public:
-	Classifier::impl(const string& model_file,
+	Classifier(const string& model_file,
 		const string& trained_file,
 		const string& mean_file,
 		const string& label_file);
@@ -45,7 +45,7 @@ private:
 	std::vector<string> labels_;
 };
 
-Classifier::impl::CCaffeCfr::impl(const string& model_file,
+Classifier::Classifier(const string& model_file,
 	const string& trained_file,
 	const string& mean_file,
 	const string& label_file) {
@@ -102,7 +102,7 @@ static std::vector<int> Argmax(const std::vector<float>& v, int N) {
 }
 
 /* Return the top N predictions. */
-std::vector<Prediction> Classifier::impl::Classify(const cv::Mat& img, int N) {
+std::vector<Prediction> Classifier::Classify(const cv::Mat& img, int N) {
 	std::vector<float> output = Predict(img);
 
 	N = std::min<int>(labels_.size(), N);
@@ -117,7 +117,7 @@ std::vector<Prediction> Classifier::impl::Classify(const cv::Mat& img, int N) {
 }
 
 /* Load the mean file in binaryproto format. */
-void Classifier::impl::SetMean(const string& mean_file) {
+void Classifier::SetMean(const string& mean_file) {
 	BlobProto blob_proto;
 	ReadProtoFromBinaryFileOrDie(mean_file.c_str(), &blob_proto);
 
@@ -147,7 +147,7 @@ void Classifier::impl::SetMean(const string& mean_file) {
 	mean_ = cv::Mat(input_geometry_, mean.type(), channel_mean);
 }
 
-std::vector<float> Classifier::impl::Predict(const cv::Mat& img) {
+std::vector<float> Classifier::Predict(const cv::Mat& img) {
 	Blob<float>* input_layer = net_->input_blobs()[0];
 	input_layer->Reshape(1, num_channels_,
 		input_geometry_.height, input_geometry_.width);
@@ -173,7 +173,7 @@ std::vector<float> Classifier::impl::Predict(const cv::Mat& img) {
 * don't need to rely on cudaMemcpy2D. The last preprocessing
 * operation will write the separate channels directly to the input
 * layer. */
-void Classifier::impl::WrapInputLayer(std::vector<cv::Mat>* input_channels) {
+void Classifier::WrapInputLayer(std::vector<cv::Mat>* input_channels) {
 	Blob<float>* input_layer = net_->input_blobs()[0];
 
 	int width = input_layer->width();
@@ -186,7 +186,7 @@ void Classifier::impl::WrapInputLayer(std::vector<cv::Mat>* input_channels) {
 	}
 }
 
-void Classifier::impl::Preprocess(const cv::Mat& img,
+void Classifier::Preprocess(const cv::Mat& img,
 	std::vector<cv::Mat>* input_channels) {
 	/* Convert the input image to the input image format of the network. */
 	cv::Mat sample;
@@ -240,7 +240,7 @@ int main(int argc, char** argv) {
 	string trained_file = argv[2];
 	string mean_file = argv[3];
 	string label_file = argv[4];
-	Classifier::impl classifier(model_file, trained_file, mean_file, label_file);
+	Classifier classifier(model_file, trained_file, mean_file, label_file);
 
 	string file = argv[5];
 

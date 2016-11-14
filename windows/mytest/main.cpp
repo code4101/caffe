@@ -31,7 +31,7 @@ int main() {
 		}
 	}
 
-	printf("正确数/总数: %d / %d ≈ %.2f\n", cnt1, cnt2, cnt1*100.0 / cnt2);
+	printf("正确数/总数: %d / %d ≈ %.2f%%\n", cnt1, cnt2, cnt1*100.0 / cnt2);
 	
 	return 0;
 }
