@@ -16,9 +16,9 @@ using std::string;
 /* Pair (label, confidence) representing a prediction. */
 typedef std::pair<string, float> Prediction;
 
-class Classifier {
+class CCaffeCfr::impl {
 public:
-	Classifier(const string& model_file,
+	impl(const string& model_file,
 		const string& trained_file,
 		const string& mean_file,
 		const string& label_file);
@@ -43,7 +43,7 @@ private:
 	std::vector<string> labels_;
 };
 
-Classifier::Classifier(const string& model_file,
+CCaffeCfr::impl::impl(const string& model_file,
 	const string& trained_file,
 	const string& mean_file,
 	const string& label_file) {
@@ -100,7 +100,7 @@ static std::vector<int> Argmax(const std::vector<float>& v, int N) {
 }
 
 /* Return the top N predictions. */
-std::vector<Prediction> Classifier::Classify(const cv::Mat& img, int N) {
+std::vector<Prediction> CCaffeCfr::impl::Classify(const cv::Mat& img, int N) {
 	std::vector<float> output = Predict(img);
 
 	N = std::min<int>(labels_.size(), N);
@@ -115,7 +115,7 @@ std::vector<Prediction> Classifier::Classify(const cv::Mat& img, int N) {
 }
 
 /* Load the mean file in binaryproto format. */
-void Classifier::SetMean(const string& mean_file) {
+void CCaffeCfr::impl::SetMean(const string& mean_file) {
 	BlobProto blob_proto;
 	ReadProtoFromBinaryFileOrDie(mean_file.c_str(), &blob_proto);
 
@@ -145,7 +145,7 @@ void Classifier::SetMean(const string& mean_file) {
 	mean_ = cv::Mat(input_geometry_, mean.type(), channel_mean);
 }
 
-std::vector<float> Classifier::Predict(const cv::Mat& img) {
+std::vector<float> CCaffeCfr::impl::Predict(const cv::Mat& img) {
 	Blob<float>* input_layer = net_->input_blobs()[0];
 	input_layer->Reshape(1, num_channels_,
 		input_geometry_.height, input_geometry_.width);
@@ -171,7 +171,7 @@ std::vector<float> Classifier::Predict(const cv::Mat& img) {
 * don't need to rely on cudaMemcpy2D. The last preprocessing
 * operation will write the separate channels directly to the input
 * layer. */
-void Classifier::WrapInputLayer(std::vector<cv::Mat>* input_channels) {
+void CCaffeCfr::impl::WrapInputLayer(std::vector<cv::Mat>* input_channels) {
 	Blob<float>* input_layer = net_->input_blobs()[0];
 
 	int width = input_layer->width();
@@ -184,7 +184,7 @@ void Classifier::WrapInputLayer(std::vector<cv::Mat>* input_channels) {
 	}
 }
 
-void Classifier::Preprocess(const cv::Mat& img,
+void CCaffeCfr::impl::Preprocess(const cv::Mat& img,
 	std::vector<cv::Mat>* input_channels) {
 	/* Convert the input image to the input image format of the network. */
 	cv::Mat sample;
@@ -226,10 +226,9 @@ void Classifier::Preprocess(const cv::Mat& img,
 
 //CCaffeCfr类的实现
 static bool firstUse = true;
-static Classifier* p_classifier = nullptr;
 
 CCaffeCfr::CCaffeCfr() {
-	if (firstUse) {
+	if (firstUse) { 
 		::google::InitGoogleLogging("mycaffe.dll");
 		firstUse = false;
 	}
@@ -244,19 +243,15 @@ CCaffeCfr::CCaffeCfr(string deploy_prototxt, string network_caffemodel, string m
 }
 
 void CCaffeCfr::reset(string model_file, string trained_file, string mean_file, string label_file) {
-	if (p_classifier) delete p_classifier;
-	p_classifier = new Classifier(model_file, trained_file, mean_file, label_file);
+	std::shared_ptr<impl> p(new impl(model_file, trained_file, mean_file, label_file));
+	pImpl = p;
 }
 
 CCaffeCfr::~CCaffeCfr() {
-	if (p_classifier) delete p_classifier;
 }
 
 string CCaffeCfr::cfr(CvMat _img) const {
 	cv::Mat img((&_img));
-
-	Classifier &classifier = *p_classifier;
-	std::vector<Prediction> predictions = classifier.Classify(img, 1);
-
+	std::vector<Prediction> predictions = pImpl->Classify(img, 1);
 	return predictions[0].first;
 }

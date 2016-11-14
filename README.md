@@ -10,3 +10,7 @@
 - 不忽略.user文件
 - 增加mycaffe动态库接口项目，及对应的mytest测试项目
 - 其他一些小改动
+
+## wkDir里的数据和模型
+
+基于MNIST样例，我把数字样本改成自己的后作出了分类器wkDir/lenet_iter_5000.caffemodel，wkDir/mynum里的图片放的是验证集。
