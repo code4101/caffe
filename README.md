@@ -1,6 +1,6 @@
 ## 说明
 
-该项目来源于：https://github.com/Microsoft/caffe（commit：f51294f）
+该项目来源于：https://github.com/Microsoft/caffe （commit：f51294f）
 
 ## 改动
 

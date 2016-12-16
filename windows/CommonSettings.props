@@ -10,7 +10,7 @@
     <!-- NOTE: If Python support is enabled, PythonDir (below) needs to be
          set to the root of your Python installation. If your Python installation
          does not contain debug libraries, debug build will not work. -->
-    <PythonSupport>false</PythonSupport>
+    <PythonSupport>true</PythonSupport>
     <!-- NOTE: If Matlab support is enabled, MatlabDir (below) needs to be
          set to the root of your Matlab installation. -->
     <MatlabSupport>true</MatlabSupport>
@@ -42,7 +42,7 @@
     <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(PythonSupport)'=='true'">
-    <PythonDir>C:\Miniconda2\</PythonDir>
+    <PythonDir>C:\Users\kzche\Anaconda2\</PythonDir>
     <LibraryPath>$(PythonDir)\libs;$(LibraryPath)</LibraryPath>
     <IncludePath>$(PythonDir)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
