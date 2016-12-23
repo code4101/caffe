@@ -9,7 +9,7 @@
 - 增加wkDir工作目录
 - 不忽略.user文件
 - 增加mycaffe动态库接口项目，及对应的mytest测试项目
-- 其他一些小改动
+- 增加[center loss](https://github.com/ydwen/caffe-face/)，[KITTI目标检测](https://github.com/NVIDIA/caffe)功能代码。
 
 ## wkDir里的数据和模型
 
