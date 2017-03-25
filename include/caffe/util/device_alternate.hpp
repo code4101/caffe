@@ -9,6 +9,8 @@
 
 #define NO_GPU LOG(FATAL) << "Cannot use GPU in CPU-only Caffe: check mode."
 
+//关闭GPU功能
+//实现方法：把名称为classname的类的前向传播、反向传播的gpu函数，定义为输出NO_GPU
 #define STUB_GPU(classname) \
 template <typename Dtype> \
 void classname<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom, \
